@@ -68,6 +68,9 @@ def RomanNum(number):
         else:
             total = ("Not a valid roman numberal.")
             return total
+    if (total < 0):
+        return "Please order your roman numerals correctly,\
+                with the largest value first."
     return total
 
 if __name__ == '__main__':
