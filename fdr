@@ -1,69 +1,74 @@
 #! /usr/bin/env python3
 
-import sys #For argv[0] on usage statement
-import os  #For UID
-import socket #Most likely for estting up socket.  Not sure
-import threading
-import signal
+import sys # For argv[0] on usage statement
+import os  # For UID
+import socket # Most likely for estting up socket.  Not sure
+import threading # I wonder why
+import signal # Signal Handling
 # from http://www.tutorialspoint.com/python3/python_multithreading.htm :
 class myThread (threading.Thread):
-    def __init__(self, port):
-        threading.Thread.__init__(self)
-        self.port = port
-    def run(self):
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) #UDP Socket
-        sock.bind(("127.0.0.1", self.port))
-        signal.pthread_sigmask(signal.SIG_BLOCK, [signal.SIGINT])
+    def __init__(self, port):   # Decalre init function, takes self and port
+        threading.Thread.__init__(self) 
+        self.port = port        # Set self.port to be the port passed in
+    def run(self):              # Start / Run
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP Socket
+        sock.bind(("127.0.0.1", self.port)) # Bind to localhost on self.port
+        signal.pthread_sigmask(signal.SIG_BLOCK, [signal.SIGINT]) 
+        # Don't block Keyboard Interrupt on threads.  PAss to main
         while True:
             ReadFromPipe(sock)
 
 def ReadFromPipe(sock):
-    number, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
-    #There's a random b on the front of the string.
-    number = number.decode("utf-8")
-    print(number)
+    number, addr = sock.recvfrom(1024) # Read in up to 1024 bytes from packet
+    number = number.decode("utf-8") # Convert to string from bytes
     try:
-        switch = str(number[0]).upper()
-        number = number[1:]
+        switch = str(number[0]).upper() # Make switch statement on first value
+        number = number[1:] # Cut first value from number
         if ( switch == 'F' ):
-            x = FibNumber(int(number))
+            x = FibNumber(int(number)) # Run fibonacci on number
         elif ( switch == 'D' ):
-            x = HexNumber(int(number))
+            x = HexNumber(int(number)) # Change number to Hex
         elif ( switch == 'R' ):
-            x = RomanNum(str(number))
+            x = RomanNum(str(number)) # Parse string to get total of MVDCIXLs
         else:
+            #Shoddy usage statement
             x = "Please precede your number with F for Fibonacci,",\
                     "D for Decimal to Hex, or R for Roman Numerals"
+        # send back value in X (Result of function
         sock.sendto(bytes(x, 'utf-8'), addr)
-    except IndexError:
+    except IndexError: # If value out of range, ignore it
         pass
 
 def main():
     try:
-        UDP_IP = "127.0.0.1"
-        UDP_PORT1 = int(os.getuid())
-        UDP_PORT2 = int(os.getuid()) + 1000
-        UDP_PORT3 = int(os.getuid()) + 2000
+        # Get port numbers
+        UDP_PORT1 = int(os.getuid())        
+        UDP_PORT2 = int(os.getuid()) + 1000 
+        UDP_PORT3 = int(os.getuid()) + 2000 
 
-        thread1 = myThread(UDP_PORT1)
+        # Initialize Threads
+        thread1 = myThread(UDP_PORT1)       
         thread2 = myThread(UDP_PORT2)
         thread3 = myThread(UDP_PORT3)
         
+        # Daemonize threads to make closing easier
         thread1.daemon = True
         thread2.daemon = True
         thread3.daemon = True
 
+        # Run threads
         thread1.start()
         thread2.start()
         thread3.start()
 
         print("Running:  Ctrl + C to quit.")
+        # Run forever (Until keyboard interrupt
         while True:
             pass
     except KeyboardInterrupt:
         return 0
 
-def FibNumber(number):
+def FibNumber(number): # Return the 'number'th fibonacci number.
     number = number - 2
     x = 1
     y = 1
@@ -77,44 +82,44 @@ def FibNumber(number):
         return hex(x)
     return hex(y)
 
-def HexNumber(number):
+def HexNumber(number): # return the hex version of the number
     return hex(number)
 
 
-def RomanNum(number):
+def RomanNum(number): # Generate a number based off of roman numbes
     total = 0;
-    for each in number.upper():
-        if ( each == 'M' ):
-            if( total % 1000 != 0 ):
-                total -= ((total % 1000) * 2)
-            total += 1000
-        elif ( each == 'D' ):
+    for each in number.upper():         # Walk through string, doing math
+        if ( each == 'M' ):             # IF M, as M should be the first value
+            if( total % 1000 != 0 ):    # Check if it's divisible by 1k.
+                total -= ((total % 1000) * 2) # Subtract the difference
+            total += 1000               # Add 1k.
+        elif ( each == 'D' ):           #Same as M, with D's value
             if ( total % 500 != 0 ):
                 total -= ((total % 500) * 2)
             total += 500
-        elif ( each == 'C' ):
+        elif ( each == 'C' ):           #Same as M with C's value
             if ( total % 100 != 0):
                 total -= ((total % 100) * 2)
             total += 100
-        elif ( each == 'L' ):
+        elif ( each == 'L' ):           #Same as M with Ls value
             if ( total % 50 != 0):
                 total -= ((total % 50) * 2)
             total += 50
-        elif ( each == 'X' ):
+        elif ( each == 'X' ):           #Same as M with X's value
             if ( total % 10 != 0):
                 total -= ((total % 10) * 2)
             total += 10
-        elif ( each == 'V' ):
+        elif ( each == 'V' ):           #Same as M with V's value
             if ( total % 5 != 0):
                 total -= ((total % 5) * 2)
             total += 5
-        elif ( each == 'I' ):
+        elif ( each == 'I' ):           #Same as M with I's value
             total += 1
-        else:
-            return "Not a valid roman numberal."
-    if (total < 0):
-        return "Please order your roman numerals correctly,\
-                with the largest value first."
+        else:                           #If not an above value
+            return "Not a valid roman numberal."    #Return this string
+    if (total < 0): #If order is wrong / backwards, Give htem this string.
+        return "Please order your roman numerals correctly,",\
+                "with the largest value first."
     return hex(total)
 
 if __name__ == '__main__':
