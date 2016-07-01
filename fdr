@@ -28,17 +28,14 @@ def ReadFromPipe(sock):
         number = number[1:]
         if ( switch == 'F' ):
             x = FibNumber(int(number))
-            print(x)
         elif ( switch == 'D' ):
             x = HexNumber(int(number))
-            print(x)
         elif ( switch == 'R' ):
             x = RomanNum(str(number))
-            print(x)
         else:
-            print("Please precede your number with F for Fibonacci,",\
-                    "D for Decimal to Hex, or R for Roman Numerals")
-        return number
+            x = "Please precede your number with F for Fibonacci,",\
+                    "D for Decimal to Hex, or R for Roman Numerals"
+        sock.sendto(bytes(x, 'utf-8'), addr)
     except IndexError:
         pass
 
