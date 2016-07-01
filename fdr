@@ -1,6 +1,5 @@
 #! /usr/bin/env python3
 
-import sys # For argv[0] on usage statement
 import os  # For UID
 import socket # Most likely for estting up socket.  Not sure
 import threading # I wonder why
@@ -24,10 +23,19 @@ def ReadFromPipe(sock):
     try:
         switch = str(number[0]).upper() # Make switch statement on first value
         number = number[1:] # Cut first value from number
-        if ( switch == 'F' ):
-            x = FibNumber(int(number)) # Run fibonacci on number
+        if ( switch == 'F' ):   # Error checking on the number
+            if (number.isdigit()):
+                if ( int(number) < 100000 ):
+                    x = FibNumber(int(number)) # Run fibonacci on number
+                else:
+                    x = "Error; Number too large."
+            else:
+                x = "Error; Not A Number"
         elif ( switch == 'D' ):
-            x = HexNumber(int(number)) # Change number to Hex
+            if ( number < (10 ** 1001)): # random arbitrarily large number
+                x = HexNumber(int(number)) # Change number to Hex
+            else:
+                x = "Number too large."
         elif ( switch == 'R' ):
             x = RomanNum(str(number)) # Parse string to get total of MVDCIXLs
         else:
