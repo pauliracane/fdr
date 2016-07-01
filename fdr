@@ -25,10 +25,10 @@ def ReadFromPipe(sock):
         number = number[1:] # Cut first value from number
         if ( switch == 'F' ):   # Error checking on the number
             if (number.isdigit()):
-                if ( int(number) < 100000 ):
+                if ( int(number) < 100000 and int(number > 0):
                     x = FibNumber(int(number)) # Run fibonacci on number
                 else:
-                    x = "Error; Number too large."
+                    x = "Error; Number out of range."
             else:
                 x = "Error; Not A Number"
         elif ( switch == 'D' ):
@@ -37,6 +37,7 @@ def ReadFromPipe(sock):
             else:
                 x = "Number too large."
         elif ( switch == 'R' ):
+            if (len(number) < 1000):
             x = RomanNum(str(number)) # Parse string to get total of MVDCIXLs
         else:
             #Shoddy usage statement
