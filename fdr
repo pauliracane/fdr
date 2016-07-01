@@ -43,6 +43,7 @@ def ReadFromPipe(sock):
             x = "Please precede your number with F for Fibonacci,",\
                     "D for Decimal to Hex, or R for Roman Numerals"
         # send back value in X (Result of function
+        x += ('\0')
         sock.sendto(bytes(x, 'utf-8'), addr)
     except IndexError: # If value out of range, ignore it
         pass
