@@ -5,7 +5,6 @@ import os  #For UID
 import socket #Most likely for estting up socket.  Not sure
 import threading
 import signal
-import sys
 # from http://www.tutorialspoint.com/python3/python_multithreading.htm :
 class myThread (threading.Thread):
     def __init__(self, port):
@@ -58,7 +57,7 @@ def main():
         while True:
             pass
     except KeyboardInterrupt:
-        sys.exit()
+        return 0
 
 def FibNumber(number):
     number = number - 2
