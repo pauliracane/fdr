@@ -48,6 +48,10 @@ def main():
         thread1 = myThread(UDP_PORT1)
         thread2 = myThread(UDP_PORT2)
         thread3 = myThread(UDP_PORT3)
+        
+        thread1.daemon = True
+        thread2.daemon = True
+        thread3.daemon = True
 
         thread1.start()
         thread2.start()
