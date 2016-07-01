@@ -1,0 +1,51 @@
+
+Name: Paul Iracane
+Date: 1July2016
+Current Module: Networking 
+Project Name: FDR
+
+	Project Goals:
+	Write a math server that will provide similar services as NTP to those who request a few specific items
+	
+Considerations:
+	Forking vs. Threading:  Threading won out due to forking being (more) difficult to communicate between
+	Needs to respond to a UDP connection
+	Needs to listen on 3 ports
+	Ordering for Roman Numerals? (Proper ordering was selected.  Highest -> Lowest with subtraction being allowed)
+	Fibonacci as Loop or Recursive function (Loop executes faster)
+	Language to use?  Lots of Text parsing for Roman Numerals; Python.
+
+	Initial Design:
+	The .h files were pulled in on an as needed basis. os for UID, socket for sockets and binding to a port, threading to have multiple processes running at once, and signal to allow the Ctrl + C to be sent to the main function.  My initial plan was to design out the funcitons needed, then set up the servers. Realized Forking wouldn't work the way I wanted, so I swapped over the threading.  Then added in the read over the network, followed by the response over hte network, and finished with Error checking.
+	Program works by forking out a different listener for each server, and when the listener receives a connection, it calls out the appropriate function, runs it, and sends the return value to the requester
+		
+Data Flow:
+		Client sends data to server
+		Server reads in first character in data sent
+		server calls appropriate function for data
+		Function runs through, getting a value (Or error in some cases)
+		Function returns value
+		Server sends return value to client
+
+Communication Protocol: 
+	udp.
+
+	Potential Pitfalls: 
+<Discuss any potential issues that you might run into while creating the project>  
+	Closing forks / threads.
+	Not properly handling roman numerals
+	text parsing
+	string slicing
+	Garbage input
+	Out of range numbers
+		
+Test Plan:  
+		User Test:
+		Struggled to get forks to close properly
+		Out of order Roman numerals is funky.
+		Fib works up to the 100000th number, and down to 0( returns 1.)
+		Didn't test hex converter.  I feel it's obvious as to why.
+		Checked multiple ports
+Conclusion:
+	Good final project.  I would have liked to have done it in C, but I feel python was the most correct language to use out of the two I feel competent in.  Threading was definately interesting, and managing to close them properly made this assignment fun to talk about.  "Daemons solved my problems." 
+
